@@ -162,15 +162,14 @@ LOGIN_REDIRECT_URL = "home"
 ACCOUNT_LOGOUT_REDIRECT_URL = "home"
 
 ACCOUNT_SESSION_REMEMBER = True
-ACCOUNT_AUTHENTICATED_METHOD = "email"
 ACCOUNT_UNIQUE_EMAIL = True
 
-ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*"]
+ACCOUNT_SIGNUP_FIELDS = ['username',"email*", "password1*"]
 ACCOUNT_LOGIN_METHODS = {
-    "email"
+    "username","email"
 }
 ACCOUNT_LOGOUT_ON_GET = False
 
-
+ACCOUNT_EMAIL_VERIFICATION = "optional"
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 

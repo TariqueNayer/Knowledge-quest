@@ -4,7 +4,9 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>{% block title %}SupaQuiz{% endblock title %}</title>
+	<title>{% block title %}Knowledge Quest{% endblock title %}</title>
+	<link rel="icon" href="{% static 'images/logo.jpg' %}" type="image/x-icon">
+
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
 	<link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
@@ -13,9 +15,9 @@
 
 <body class="d-flex flex-column min-vh-100">
 	<main class="flex-shrink-0">
-	<nav class="navbar navbar-expand-lg navbar-dark bg-dark bg-gradient">
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 		<div class="container-fluid">
-			<a class="navbar-brand" href="{% url 'home' %}">Quiz</a>
+			<a class="navbar-brand" href="{% url 'home' %}">  <img src="{% static 'images/logo.jpg' %}" alt="" width="60" height="55" class="d-inline-block align-text-bottom"></a>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
@@ -62,7 +64,7 @@
 	</main>
 
 
-	<footer class="mt-auto py-3 bg-dark text-white">
+	<footer class="mt-auto py-3 bg-dark text-secondary">
 		<div class="container">
 			{% block footer %}
 			<p>i am basic footer.</p>

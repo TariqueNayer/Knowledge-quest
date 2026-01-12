@@ -9,14 +9,18 @@
 <body>
 {% block content %}
 <div class="container">
-	{% if user.username %}
 	<p class="fs-2">{{ user.username }}</p>
-	{% else %}
-	<p class="fs-2">{{ user.email }}</p>
-	{% endif %}
+	
 
 	<p class="fst-italic fs-5">Created on: {{ user.date_joined|date:"F d, Y" }}</p>
 
+	<p class="fst-italic fs-5">Email: {{ user.email }}</p>
+
+	{% if not user.emailaddress_set.first.verified %}
+    <span class="badge bg-warning text-dark">(Unverified)</span>
+    {% else %}
+    <span class="badge bg-info text-dark">(Varified)</span>
+  	{% endif %}
 	<hr>
 
 	{% if scores %}
