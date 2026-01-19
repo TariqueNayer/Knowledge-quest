@@ -7,7 +7,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         User = get_user_model()
-        # Use environment variables for secure credentials
+        
         username = os.environ.get('DJANGO_SU_USERNAME', 'Great_admin')
         email = os.environ.get('DJANGO_SU_EMAIL', 'Great_admin@123.org')
         password = os.environ.get('DJANGO_SU_PASSWORD', 'compassword123')

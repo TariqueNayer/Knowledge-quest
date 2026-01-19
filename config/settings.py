@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 import os
 from pathlib import Path
 from environs import Env
-from urllib.parse import urlparse, parse_qsl
+import dj_database_url
 
 env = Env()
 env.read_env()
@@ -92,22 +92,19 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-tmpPostgres = urlparse(os.getenv("DATABASE_URL"))
 
-#DATABASES = {'default': env.dj_db_url("DATABASE_URL")} # Uccomment this line for local development.
 
-# Commant this for local dev.
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': tmpPostgres.path.replace('/', ''),
-        'USER': tmpPostgres.username,
-        'PASSWORD': tmpPostgres.password,
-        'HOST': tmpPostgres.hostname,
-        'PORT': 5432,
-        'OPTIONS': dict(parse_qsl(tmpPostgres.query)),
-    }
+	"default": env.dj_db_url(
+		"DATABASE_URL", 
+		ssl_require=not env.bool("DEBUG", default=False)
+	)
 }
+
+# Crucial for Neon's "Scale to Zero" behavior
+DATABASES["default"]["CONN_MAX_AGE"] = 600
+DATABASES["default"]["CONN_HEALTH_CHECKS"] = True
+
 
 
 # Password validation
@@ -151,12 +148,12 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # whitenoise settings.
 STORAGES = {
-    "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
+	"default": {
+		"BACKEND": "django.core.files.storage.FileSystemStorage",
+	},
+	"staticfiles": {
+		"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+	},
 }
 
 # custom user.
@@ -181,7 +178,7 @@ ACCOUNT_UNIQUE_EMAIL = True
 
 ACCOUNT_SIGNUP_FIELDS = ['username',"email*", "password1*"]
 ACCOUNT_LOGIN_METHODS = {
-    "username","email"
+	"username","email"
 }
 ACCOUNT_LOGOUT_ON_GET = False
 
@@ -197,19 +194,19 @@ SECURE_SSL_REDIRECT = env.bool("SECURE_SSL_REDIRECT", default=True)
 
 SECURE_HSTS_SECONDS = env.int("SECURE_HSTS_SECONDS", default=2592000)  # 30 days
 SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool(
-    "SECURE_HSTS_INCLUDE_SUBDOMAINS", default=True
+	"SECURE_HSTS_INCLUDE_SUBDOMAINS", default=True
 )
 SECURE_HSTS_PRELOAD = env.bool("SECURE_HSTS_PRELOAD", default=True)
 
 # caching
 if DEBUG == False:
-    MIDDLEWARE.insert(
-        0, "django.middleware.cache.UpdateCacheMiddleware"
-    )  # django cache framework. Update cache middleware.
-    MIDDLEWARE.append(
-        "django.middleware.cache.FetchFromCacheMiddleware"
-    )  # dcf. Fetch Cache middleware.
-    # for pre-site-cache.
-    CACHE_MIDDLEWARE_ALIAS = "default"
-    CACHE_MIDDLEWARE_SECONDS = 604800
-    CACHE_MIDDLEWARE_KEY_PREFIX = ""
+	MIDDLEWARE.insert(
+		0, "django.middleware.cache.UpdateCacheMiddleware"
+	)  # django cache framework. Update cache middleware.
+	MIDDLEWARE.append(
+		"django.middleware.cache.FetchFromCacheMiddleware"
+	)  # dcf. Fetch Cache middleware.
+	# for pre-site-cache.
+	CACHE_MIDDLEWARE_ALIAS = "default"
+	CACHE_MIDDLEWARE_SECONDS = 604800
+	CACHE_MIDDLEWARE_KEY_PREFIX = ""
