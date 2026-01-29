@@ -198,14 +198,8 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool(
 SECURE_HSTS_PRELOAD = env.bool("SECURE_HSTS_PRELOAD", default=True)
 
 # caching
-if DEBUG == False:
-	MIDDLEWARE.insert(
-		0, "django.middleware.cache.UpdateCacheMiddleware"
-	)  # django cache framework. Update cache middleware.
-	MIDDLEWARE.append(
-		"django.middleware.cache.FetchFromCacheMiddleware"
-	)  # dcf. Fetch Cache middleware.
-	# for pre-site-cache.
-	CACHE_MIDDLEWARE_ALIAS = "default"
-	CACHE_MIDDLEWARE_SECONDS = 604800
-	CACHE_MIDDLEWARE_KEY_PREFIX = ""
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+    }
+}

@@ -1,9 +1,14 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import TemplateView
-from quiz.models import UserScore
+
 from allauth.account.views import PasswordChangeView
+
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
+
+from django.core.cache import cache
+
+from quiz.models import UserScore
 
 # Create your views here.
 
@@ -13,16 +18,24 @@ class ProfileView(LoginRequiredMixin, TemplateView):
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context["scores"] = (
-			UserScore.objects
-			.filter(user=self.request.user)
-			.select_related("category")
-		)
+		user = self.request.user
+		cache_key = f"user:{user.id}:scores"
+
+		scores = cache.get(cache_key)
+
+		if scores is None:
+			
+			scores = (UserScore.objects.filter(user=self.request.user).select_related("category"))
+			cache.set(cache_key, scores, 300)
+
+		context["scores"] = scores
+		
 		return context
 
 class CustomPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
 	login_url = "account_login"
 	# This will be the landing page after a successful change
+
 	def get_success_url(self):
 		# Setting a flag in the session that expires quickly
 		self.request.session['password_changed_successfully'] = True
