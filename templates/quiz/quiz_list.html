@@ -27,6 +27,7 @@
 	</div>
 
 	<hr>
+	{% if Category_list %}
 	<div class="row">
 		{% for Category in Category_list %}
 		<div class="col-sm-6">
@@ -43,6 +44,9 @@
 		</div>
 		{% endfor %}
 	</div>
+	{% else %}
+		<p class="fw-normal">No results found. for search "{{ search_query }}"</p>
+	{% endif %}
 {% endblock content %}
 </body>
 </html>

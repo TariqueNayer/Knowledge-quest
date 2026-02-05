@@ -13,14 +13,18 @@
 	<div class="container text-center">
 		<p class="fw-bolder fs-1">Knowledge Quest</p>
 		<hr>
-		<p class="fs-4 fw-bold">Want to train your brain?</p>
+		<p class="fs-4 fw-bold">For the most curious and yearning for knowledge</p>
+		<p class="fs-4 fw-bold">Not to chase a career or have fun. but for the sheer passion for learning</p>
 		<p class="fs-4 fw-bold">Want to challenge yourself to see if you're as smart as you think?</p>
-		<p class="fs-3 fw-bold">Try the our quizzes here at Knowledge Quest</p>
+		<p class="fs-3 fw-bold">Beging the quest for enlightment</p>
+		
 		{% if user.is_authenticated %}
 		<a class="btn btn-dark btn-lg fw-bold" href="{% url 'quiz_list' %}">Start a Quiz!</a>
 		{% else %}
 		<a class="btn btn-success btn-lg fw-bold" href="{% url 'account_signup' %}">Sign Up Now!</a>
 		{% endif %}
+
+		
 		{% endblock content %}
 	</div>
 </body>

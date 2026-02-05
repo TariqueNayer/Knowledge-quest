@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
+from django.views.decorators.cache import never_cache
 
 from django.db.models import Q
 
@@ -14,16 +15,17 @@ from .forms import CategoryQuizForm
 
 # Create your views here.
 @method_decorator(vary_on_cookie, name='dispatch')
-@method_decorator(cache_page(60), 'dispatch')
+@method_decorator(cache_page(360), 'dispatch')
 class HomeView(TemplateView):
 	template_name = 'quiz/home.html'
 
 @method_decorator(vary_on_cookie, name='dispatch')
-@method_decorator(cache_page(60), 'dispatch')
+@method_decorator(cache_page(360), 'dispatch')
 class AboutView(TemplateView):
 	template_name = 'quiz/about.html'
+
 @method_decorator(vary_on_cookie, name='dispatch')
-@method_decorator(cache_page(60), 'dispatch')
+@method_decorator(cache_page(360), 'dispatch')
 class QuizListView(LoginRequiredMixin, ListView):
 	model = Category
 	context_object_name = 'Category_list'
@@ -31,7 +33,7 @@ class QuizListView(LoginRequiredMixin, ListView):
 	login_url = "account_login"
 	
 @method_decorator(vary_on_cookie, name='dispatch')
-@method_decorator(cache_page(60), 'dispatch')
+@method_decorator(cache_page(360), 'dispatch')
 class QuizView(LoginRequiredMixin, FormView):
 	template_name = "quiz/category_quiz.html"
 	form_class = CategoryQuizForm
@@ -118,6 +120,8 @@ class QuizView(LoginRequiredMixin, FormView):
 	def get_success_url(self):
 		return "/quiz/result/"
 
+
+@method_decorator(never_cache, name='dispatch')
 class QuizResultView(LoginRequiredMixin, TemplateView):
 	template_name = "quiz/result.html"
 	login_url = "account_login"
@@ -138,6 +142,8 @@ class QuizResultView(LoginRequiredMixin, TemplateView):
 		context["results"] = self.request.session["results"]
 		return context
 
+@method_decorator(vary_on_cookie, name='dispatch')
+@method_decorator(cache_page(360), 'dispatch')
 class SearchCategoryView(LoginRequiredMixin, ListView):
 	model = Category
 	template_name = 'quiz/quiz_list.html'
@@ -145,5 +151,12 @@ class SearchCategoryView(LoginRequiredMixin, ListView):
 	login_url = "account_login"
 
 	def get_queryset(self):
-		query = self.request.GET.get('q')
-		return Category.objects.filter( Q(name__icontains=query) | Q(description__icontains=query) )
+		query = self.request.GET.get('q','').strip()
+		if query:
+			return Category.objects.filter( Q(name__icontains=query) | Q(description__icontains=query) )
+		return Category.objects.all()
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['search_query'] = self.request.GET.get('q', '')
+		return context
