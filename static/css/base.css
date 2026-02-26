@@ -28,7 +28,7 @@ body.default-bg {
 /* 3. The Opacity Logic: Only runs if 'has-opacity' is in the <body> class */
 body.home-page::before {
   content: "";
-  background-image: url("../images/background1.png");
+  background-image: url("../images/background1.webp");
   
   background-size: cover;
   background-repeat: no-repeat;
