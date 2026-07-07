@@ -27,8 +27,7 @@ jobs:
       env:
         SECRET_KEY: '0+unh(kl4@na%(y!4lk-12j6@&s@7a+q#1-9nfzlk0hd34t!fb'
         DEBUG: 'True'
-        DATABASE_URL: 'sqlite:///db.sqlite3'
+        DATABASE_URL: 'sqlite:///:memory:'
       run: |
         python manage.py collectstatic --noinput
-        python manage.py migrate
         python manage.py test
