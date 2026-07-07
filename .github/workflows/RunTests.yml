@@ -29,4 +29,6 @@ jobs:
         DEBUG: 'True'
         DATABASE_URL: 'sqlite:///db.sqlite3'
       run: |
+        python manage.py collectstatic --noinput
+        python manage.py migrate
         python manage.py test
