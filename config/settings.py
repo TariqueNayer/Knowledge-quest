@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 import os
+import sys
 from pathlib import Path
 from environs import Env
 import dj_database_url
@@ -20,6 +21,7 @@ env.read_env()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+TESTING = 'test' in sys.argv
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
@@ -184,22 +186,23 @@ ACCOUNT_LOGOUT_ON_GET = False
 ACCOUNT_EMAIL_VERIFICATION = "optional"
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
-# cookies
-CSRF_COOKIE_SECURE = env.bool("CSRF_COOKIE_SECURE", default=True)
-SESSION_COOKIE_SECURE = env.bool("SESSION_COOKIE_SECURE", default=True)
+if not TESTING:
+	# cookies
+	CSRF_COOKIE_SECURE = env.bool("CSRF_COOKIE_SECURE", default=True)
+	SESSION_COOKIE_SECURE = env.bool("SESSION_COOKIE_SECURE", default=True)
 
-# for HTTPS (SSL).
-SECURE_SSL_REDIRECT = env.bool("SECURE_SSL_REDIRECT", default=True)
+	# for HTTPS (SSL).
+	SECURE_SSL_REDIRECT = env.bool("SECURE_SSL_REDIRECT", default=True)
 
-SECURE_HSTS_SECONDS = env.int("SECURE_HSTS_SECONDS", default=2592000)  # 30 days
-SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool(
-	"SECURE_HSTS_INCLUDE_SUBDOMAINS", default=True
-)
-SECURE_HSTS_PRELOAD = env.bool("SECURE_HSTS_PRELOAD", default=True)
+	SECURE_HSTS_SECONDS = env.int("SECURE_HSTS_SECONDS", default=2592000)  # 30 days
+	SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool(
+		"SECURE_HSTS_INCLUDE_SUBDOMAINS", default=True
+	)
+	SECURE_HSTS_PRELOAD = env.bool("SECURE_HSTS_PRELOAD", default=True)
 
-# caching
-CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
-    }
-}
+	# caching
+	CACHES = {
+	    "default": {
+	        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+	    }
+	}
